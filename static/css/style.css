@@ -1,0 +1,293 @@
+/* =========================================================
+   University Academic Results Bot – Custom Stylesheet
+   RTL / Arabic / Professional University Theme
+   ========================================================= */
+
+/* ── Base ─────────────────────────────────────────────────── */
+:root {
+  --primary:    #4361ee;
+  --primary-dark: #3451d1;
+  --success:    #28a745;
+  --danger:     #dc3545;
+  --warning:    #ffc107;
+  --info:       #17a2b8;
+  --grade-a-plus: #1a7a4a;
+  --grade-a:    #28a745;
+  --grade-b:    #17a2b8;
+  --grade-c:    #fd7e14;
+  --grade-d:    #e67e22;
+  --grade-f:    #dc3545;
+  --bg-light:   #f8f9fa;
+  --card-radius: 12px;
+  --shadow-sm:  0 2px 8px rgba(0,0,0,.07);
+  --shadow:     0 4px 16px rgba(0,0,0,.10);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Cairo', 'Segoe UI', sans-serif;
+  background: #f0f2f8;
+  color: #212529;
+  direction: rtl;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main { flex: 1; }
+
+/* ── Navbar ───────────────────────────────────────────────── */
+.bg-primary-gradient {
+  background: linear-gradient(135deg, var(--primary) 0%, #3a0ca3 100%) !important;
+}
+
+.navbar-brand .brand-icon { font-size: 1.4rem; }
+
+/* ── Hero ─────────────────────────────────────────────────── */
+.hero-section {
+  background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
+  border-radius: var(--card-radius);
+  padding: 3rem 1.5rem;
+}
+
+.hero-icon { font-size: 4rem; line-height: 1; }
+
+/* ── Search form ──────────────────────────────────────────── */
+.search-form .form-control {
+  border-radius: 10px 0 0 10px;
+  border-color: #c5cae9;
+  font-size: 1rem;
+  padding: .75rem 1.2rem;
+}
+[dir="rtl"] .search-form .form-control {
+  border-radius: 0 10px 10px 0;
+}
+
+.search-form .btn {
+  border-radius: 0 10px 10px 0;
+}
+[dir="rtl"] .search-form .btn {
+  border-radius: 10px 0 0 10px;
+}
+
+.demo-code {
+  background: #e9ecef;
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: var(--primary);
+}
+
+/* ── Cards generic ────────────────────────────────────────── */
+.card {
+  border-radius: var(--card-radius);
+  box-shadow: var(--shadow-sm);
+}
+
+.card-hover {
+  transition: transform .2s, box-shadow .2s;
+  cursor: pointer;
+}
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow);
+}
+
+/* ── Feature cards ────────────────────────────────────────── */
+.feature-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  margin: 0 auto;
+}
+
+.bg-primary-soft   { background: #e0e7ff; }
+.bg-success-soft   { background: #d4edda; }
+.bg-warning-soft   { background: #fff3cd; }
+.bg-info-soft      { background: #d1ecf1; }
+.bg-danger-soft    { background: #f8d7da; }
+.bg-secondary-soft { background: #e9ecef; }
+
+.text-primary  { color: var(--primary) !important; }
+.text-success  { color: var(--success) !important; }
+.text-danger   { color: var(--danger) !important; }
+
+/* ── Section title ────────────────────────────────────────── */
+.section-title {
+  position: relative;
+  padding-bottom: .75rem;
+}
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 50%;
+  transform: translateX(50%);
+  width: 60px;
+  height: 3px;
+  background: var(--primary);
+  border-radius: 2px;
+}
+
+/* ── Student avatar ───────────────────────────────────────── */
+.student-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.student-avatar-lg {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), #3a0ca3);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  font-weight: 900;
+  flex-shrink: 0;
+}
+
+.student-avatar-sm {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .9rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+/* ── Student card ─────────────────────────────────────────── */
+.student-card {
+  border-top: 4px solid var(--primary) !important;
+  background: #fff;
+}
+
+.level-badge {
+  background: linear-gradient(135deg, var(--primary), #3a0ca3);
+  color: #fff;
+  font-size: .8rem;
+  padding: .3em .8em;
+  border-radius: 20px;
+}
+
+.motivation-banner {
+  background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+  border-radius: 8px;
+  padding: .6rem 1rem;
+  color: var(--primary);
+  font-size: .9rem;
+  font-weight: 600;
+}
+
+/* ── Stat cards ───────────────────────────────────────────── */
+.stat-card .stat-icon { font-size: 2rem; margin-bottom: .5rem; }
+.stat-card .stat-number { font-size: 2.2rem; font-weight: 900; line-height: 1; }
+.stat-card .stat-label  { font-size: .8rem; color: #6c757d; margin-top: .25rem; }
+
+/* ── Tabs ─────────────────────────────────────────────────── */
+.nav-tabs-custom {
+  border-bottom: 2px solid #dee2e6;
+  gap: 4px;
+}
+.nav-tabs-custom .nav-link {
+  color: #6c757d;
+  border: none;
+  border-radius: 8px 8px 0 0;
+  padding: .6rem 1.2rem;
+  font-weight: 600;
+  font-size: .9rem;
+  transition: all .2s;
+}
+.nav-tabs-custom .nav-link:hover { background: #e9ecef; color: var(--primary); }
+.nav-tabs-custom .nav-link.active {
+  background: var(--primary);
+  color: #fff;
+  border-bottom-color: transparent;
+}
+
+/* ── Subjects table ───────────────────────────────────────── */
+.subjects-table td, .subjects-table th { vertical-align: middle; }
+
+.score-badge {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: .85rem;
+  font-weight: 600;
+}
+
+.grade-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: .8rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.progress-thin {
+  height: 8px;
+  border-radius: 4px;
+  margin-bottom: 4px;
+}
+
+.row-fail { background: #fff5f5; }
+
+/* ── Grade color helpers ──────────────────────────────────── */
+.grade-a-plus { color: var(--grade-a-plus); }
+.grade-a      { color: var(--grade-a); }
+.grade-b      { color: var(--grade-b); }
+.grade-c      { color: var(--grade-c); }
+.grade-d      { color: var(--grade-d); }
+.grade-f      { color: var(--grade-f); }
+
+/* ── Recommendations ──────────────────────────────────────── */
+.rec-card { border-right: 4px solid transparent !important; transition: transform .15s; }
+.rec-card:hover { transform: translateY(-3px); }
+.rec-success  { border-right-color: var(--success) !important; background: #f6fff8; }
+.rec-info     { border-right-color: var(--info) !important;    background: #f0faff; }
+.rec-warning  { border-right-color: var(--warning) !important; background: #fffdf0; }
+.rec-danger   { border-right-color: var(--danger) !important;  background: #fff5f5; }
+
+.rec-icon { font-size: 2rem; flex-shrink: 0; }
+
+/* ── Alerts ───────────────────────────────────────────────── */
+.alert { border-radius: 10px; }
+.alert-icon { font-size: 1.5rem; flex-shrink: 0; }
+
+/* ── Footer ───────────────────────────────────────────────── */
+.footer { background: #1a1a2e !important; }
+
+/* ── Responsive tweaks ────────────────────────────────────── */
+@media (max-width: 576px) {
+  .stat-card .stat-number { font-size: 1.6rem; }
+  .hero-section { padding: 2rem 1rem; }
+  .student-avatar-lg { width: 52px; height: 52px; font-size: 1.3rem; }
+}
+
+/* ── Scrollbar ────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #f1f1f1; }
+::-webkit-scrollbar-thumb { background: #c5cae9; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--primary); }

@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+
+{% block title %}لوحة الإدارة – نظام النتائج الأكاديمية{% endblock %}
+
+{% block content %}
+<div class="container">
+
+  <div class="d-flex align-items-center justify-content-between mb-4">
+    <h2 class="fw-bold mb-0"><i class="bi bi-gear-fill me-2 text-primary"></i>لوحة الإدارة</h2>
+    {% if demo_mode %}
+    <span class="badge bg-warning text-dark px-3 py-2">
+      <i class="bi bi-database me-1"></i>وضع البيانات التجريبية
+    </span>
+    {% endif %}
+  </div>
+
+  <!-- ── System stats ───────────────────────────────────────────────────── -->
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+      <div class="stat-card card border-0 shadow-sm text-center h-100">
+        <div class="card-body p-4">
+          <div class="stat-icon">👥</div>
+          <div class="stat-number text-primary">{{ total_students }}</div>
+          <div class="stat-label">إجمالي الطلاب</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="stat-card card border-0 shadow-sm text-center h-100">
+        <div class="card-body p-4">
+          <div class="stat-icon">📚</div>
+          <div class="stat-number text-success">{{ total_subjects }}</div>
+          <div class="stat-label">إجمالي المواد</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="stat-card card border-0 shadow-sm text-center h-100">
+        <div class="card-body p-4">
+          <div class="stat-icon">🔍</div>
+          <div class="stat-number text-info">{{ recent_searches|length }}</div>
+          <div class="stat-label">عمليات البحث</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="stat-card card border-0 shadow-sm text-center h-100">
+        <div class="card-body p-4">
+          <div class="stat-icon">🗄️</div>
+          <div class="stat-number {{ 'text-success' if not demo_mode else 'text-warning' }} small">
+            {{ 'Supabase' if not demo_mode else 'تجريبي' }}
+          </div>
+          <div class="stat-label">مصدر البيانات</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+
+    <!-- ── Students list ──────────────────────────────────────────────── -->
+    <div class="col-lg-8">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white border-bottom py-3">
+          <h5 class="mb-0 fw-bold"><i class="bi bi-people me-2 text-primary"></i>قائمة الطلاب</h5>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th>الاسم</th>
+                  <th>الرقم الجامعي</th>
+                  <th class="text-center">عدد المواد</th>
+                  <th class="text-center">الإجراءات</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for st in students %}
+                <tr>
+                  <td>
+                    <div class="d-flex align-items-center gap-2">
+                      <div class="student-avatar-sm">{{ st.name[0] }}</div>
+                      <span class="fw-semibold">{{ st.name }}</span>
+                    </div>
+                  </td>
+                  <td><code>{{ st.university_id }}</code></td>
+                  <td class="text-center">
+                    <span class="badge bg-secondary">
+                      {{ st.subjects|length if st.subjects is iterable and st.subjects is not string else '–' }}
+                    </span>
+                  </td>
+                  <td class="text-center">
+                    <a href="{{ url_for('student_results', student_id=st.id) }}" class="btn btn-sm btn-outline-primary">
+                      <i class="bi bi-eye me-1"></i>عرض
+                    </a>
+                    <a href="{{ url_for('export_pdf', student_id=st.id) }}" class="btn btn-sm btn-outline-danger ms-1">
+                      <i class="bi bi-file-pdf"></i>
+                    </a>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Sidebar ────────────────────────────────────────────────────── -->
+    <div class="col-lg-4">
+
+      <!-- Recent searches -->
+      <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-white border-bottom py-3">
+          <h6 class="mb-0 fw-bold"><i class="bi bi-clock-history me-2 text-info"></i>آخر عمليات البحث</h6>
+        </div>
+        <div class="card-body">
+          {% if recent_searches %}
+          <ul class="list-group list-group-flush">
+            {% for q in recent_searches %}
+            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+              <span class="text-muted small"><i class="bi bi-search me-1"></i>{{ q }}</span>
+              <a href="{{ url_for('search') }}" class="btn btn-xs btn-outline-secondary"
+                 onclick="event.preventDefault(); document.getElementById('adminSearch').value='{{ q }}'; document.getElementById('adminSearchForm').submit();">
+                بحث
+              </a>
+            </li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <p class="text-muted small mb-0">لا توجد عمليات بحث سابقة في هذه الجلسة.</p>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- System info -->
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white border-bottom py-3">
+          <h6 class="mb-0 fw-bold"><i class="bi bi-info-circle me-2 text-secondary"></i>معلومات النظام</h6>
+        </div>
+        <div class="card-body">
+          <dl class="row mb-0 small">
+            <dt class="col-6 text-muted">مصدر البيانات</dt>
+            <dd class="col-6">{{ 'Supabase' if not demo_mode else 'بيانات تجريبية' }}</dd>
+            <dt class="col-6 text-muted">رابط Supabase</dt>
+            <dd class="col-6 text-truncate" style="max-width:140px;">
+              <small>{{ supabase_url }}</small>
+            </dd>
+            <dt class="col-6 text-muted">إصدار Flask</dt>
+            <dd class="col-6">{{ flask_version }}</dd>
+          </dl>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Hidden search form for recent-searches quick-search -->
+  <form id="adminSearchForm" method="POST" action="{{ url_for('search') }}" class="d-none">
+    <input type="text" id="adminSearch" name="query" />
+  </form>
+
+</div>
+{% endblock %}

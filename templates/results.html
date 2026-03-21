@@ -1,0 +1,332 @@
+{% extends "base.html" %}
+
+{% block title %}نتائج {{ student.name }} – نظام النتائج الأكاديمية{% endblock %}
+
+{% block content %}
+<div class="container">
+
+  <!-- ── Breadcrumb ──────────────────────────────────────────────────────── -->
+  <nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{{ url_for('index') }}">الرئيسية</a></li>
+      <li class="breadcrumb-item active">نتائج الطالب</li>
+    </ol>
+  </nav>
+
+  <!-- ── Student info card ──────────────────────────────────────────────── -->
+  <div class="card border-0 shadow student-card mb-4">
+    <div class="card-body p-4">
+      <div class="row align-items-center">
+        <div class="col-auto">
+          <div class="student-avatar-lg">{{ student.name[0] }}</div>
+        </div>
+        <div class="col">
+          <h3 class="fw-bold mb-1">{{ student.name }}</h3>
+          <div class="d-flex flex-wrap gap-3 text-muted">
+            <span><i class="bi bi-credit-card me-1"></i>{{ student.university_id }}</span>
+            <span>
+              <i class="bi bi-bar-chart me-1"></i>
+              <span class="badge level-badge">{{ stats.performance_level }}</span>
+            </span>
+            <span><i class="bi bi-percent me-1"></i>المعدل: <strong>{{ stats.average }}%</strong></span>
+          </div>
+        </div>
+        <div class="col-auto d-flex gap-2 flex-wrap">
+          <a href="{{ url_for('export_pdf', student_id=student.id) }}" class="btn btn-outline-danger">
+            <i class="bi bi-file-pdf me-1"></i>تصدير PDF
+          </a>
+          <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-search me-1"></i>بحث جديد
+          </a>
+        </div>
+      </div>
+
+      <!-- Motivation message -->
+      <div class="motivation-banner mt-3">
+        <i class="bi bi-stars me-2"></i>{{ motivation }}
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Statistics cards ───────────────────────────────────────────────── -->
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+      <div class="stat-card card border-0 shadow-sm text-center h-100">
+        <div class="card-body p-3">
+          <div class="stat-icon">📚</div>
+          <div class="stat-number text-primary">{{ stats.total_subjects }}</div>
+          <div class="stat-label">إجمالي المواد</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="stat-card card border-0 shadow-sm text-center h-100">
+        <div class="card-body p-3">
+          <div class="stat-icon">✅</div>
+          <div class="stat-number text-success">{{ stats.passed }}</div>
+          <div class="stat-label">مواد ناجحة</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="stat-card card border-0 shadow-sm text-center h-100">
+        <div class="card-body p-3">
+          <div class="stat-icon">❌</div>
+          <div class="stat-number text-danger">{{ stats.failed }}</div>
+          <div class="stat-label">مواد راسبة</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="stat-card card border-0 shadow-sm text-center h-100">
+        <div class="card-body p-3">
+          <div class="stat-icon">📊</div>
+          <div class="stat-number text-info">{{ stats.pass_rate }}%</div>
+          <div class="stat-label">نسبة النجاح</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Main tabs ──────────────────────────────────────────────────────── -->
+  <ul class="nav nav-tabs nav-tabs-custom mb-4" id="mainTabs">
+    <li class="nav-item">
+      <a class="nav-link active" data-bs-toggle="tab" href="#tab-subjects">
+        <i class="bi bi-table me-1"></i>المواد والدرجات
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-bs-toggle="tab" href="#tab-charts">
+        <i class="bi bi-bar-chart-line me-1"></i>المخططات البيانية
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-bs-toggle="tab" href="#tab-recommendations">
+        <i class="bi bi-lightbulb me-1"></i>التوصيات
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-bs-toggle="tab" href="#tab-alerts">
+        <i class="bi bi-bell me-1"></i>التنبيهات
+        {% if stats.failed > 0 %}
+        <span class="badge bg-danger ms-1">{{ stats.failed }}</span>
+        {% endif %}
+      </a>
+    </li>
+  </ul>
+
+  <div class="tab-content">
+
+    <!-- ── Subjects tab ────────────────────────────────────────────────── -->
+    <div class="tab-pane fade show active" id="tab-subjects">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white border-bottom py-3">
+          <h5 class="mb-0 fw-bold"><i class="bi bi-table me-2 text-primary"></i>جدول المواد والدرجات</h5>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0 subjects-table">
+              <thead class="table-dark">
+                <tr>
+                  <th>#</th>
+                  <th>اسم المادة</th>
+                  <th class="text-center">نظري</th>
+                  <th class="text-center">عملي</th>
+                  <th class="text-center">المجموع</th>
+                  <th class="text-center">النسبة</th>
+                  <th class="text-center">التقدير</th>
+                  <th class="text-center">الحالة</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for s in subjects %}
+                {% set passed = s.percentage >= 50 %}
+                <tr class="{{ 'row-fail' if not passed else '' }}">
+                  <td class="text-muted small">{{ loop.index }}</td>
+                  <td class="fw-semibold">{{ s.subject_name }}</td>
+                  <td class="text-center">
+                    <span class="score-badge">
+                      {{ s.theoretical_score }}/{{ s.max_theoretical }}
+                    </span>
+                  </td>
+                  <td class="text-center">
+                    <span class="score-badge">
+                      {{ s.practical_score }}/{{ s.max_practical }}
+                    </span>
+                  </td>
+                  <td class="text-center fw-bold">{{ s.total }}/{{ s.max_total }}</td>
+                  <td class="text-center">
+                    <div class="progress progress-thin">
+                      <div
+                        class="progress-bar"
+                        role="progressbar"
+                        style="width: {{ s.percentage }}%; background-color: {{ s.color }};"
+                      ></div>
+                    </div>
+                    <small class="text-muted">{{ s.percentage }}%</small>
+                  </td>
+                  <td class="text-center">
+                    <span class="grade-badge" style="background-color: {{ s.background }}; color: {{ s.color }}; border: 1px solid {{ s.color }};">
+                      {{ s.letter }} – {{ s.description }}
+                    </span>
+                  </td>
+                  <td class="text-center">
+                    {% if passed %}
+                    <span class="badge bg-success">ناجح ✓</span>
+                    {% else %}
+                    <span class="badge bg-danger">راسب ✗</span>
+                    {% endif %}
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+              <tfoot class="table-light">
+                <tr class="fw-bold">
+                  <td colspan="4" class="text-end">الإجمالي:</td>
+                  <td class="text-center">{{ stats.total_score }}/{{ stats.max_total_score }}</td>
+                  <td class="text-center">{{ stats.average }}%</td>
+                  <td class="text-center">{{ stats.performance_level }}</td>
+                  <td class="text-center">
+                    <span class="badge bg-primary">{{ stats.passed }}/{{ stats.total_subjects }}</span>
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Extra stats row -->
+      <div class="row g-3 mt-3">
+        <div class="col-md-4">
+          <div class="card border-0 shadow-sm h-100">
+            <div class="card-body text-center">
+              <div class="text-muted small mb-1">أعلى درجة</div>
+              <div class="display-6 fw-bold text-success">{{ stats.highest_score }}%</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card border-0 shadow-sm h-100">
+            <div class="card-body text-center">
+              <div class="text-muted small mb-1">المعدل العام</div>
+              <div class="display-6 fw-bold text-primary">{{ stats.average }}%</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card border-0 shadow-sm h-100">
+            <div class="card-body text-center">
+              <div class="text-muted small mb-1">أدنى درجة</div>
+              <div class="display-6 fw-bold text-danger">{{ stats.lowest_score }}%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Charts tab ──────────────────────────────────────────────────── -->
+    <div class="tab-pane fade" id="tab-charts">
+      <div class="row g-4">
+        <div class="col-lg-8">
+          <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white border-bottom py-3">
+              <h6 class="mb-0 fw-bold"><i class="bi bi-bar-chart me-2 text-primary"></i>درجات المواد</h6>
+            </div>
+            <div class="card-body">
+              <canvas id="gradesChart" height="120"></canvas>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white border-bottom py-3">
+              <h6 class="mb-0 fw-bold"><i class="bi bi-pie-chart me-2 text-success"></i>نجاح / رسوب</h6>
+            </div>
+            <div class="card-body d-flex align-items-center justify-content-center">
+              <canvas id="pieChart" style="max-height:250px;"></canvas>
+            </div>
+          </div>
+        </div>
+        <div class="col-12">
+          <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-bottom py-3">
+              <h6 class="mb-0 fw-bold"><i class="bi bi-bar-chart-steps me-2 text-info"></i>مقارنة النظري والعملي</h6>
+            </div>
+            <div class="card-body">
+              <canvas id="comparisonChart" height="100"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Recommendations tab ─────────────────────────────────────────── -->
+    <div class="tab-pane fade" id="tab-recommendations">
+      <div class="row g-3">
+        {% for rec in recommendations %}
+        <div class="col-md-6">
+          <div class="card border-0 shadow-sm h-100 rec-card rec-{{ rec.type }}">
+            <div class="card-body p-4">
+              <div class="d-flex align-items-start gap-3">
+                <div class="rec-icon">{{ rec.icon }}</div>
+                <div>
+                  <h6 class="fw-bold mb-1">{{ rec.title }}</h6>
+                  <p class="mb-0 text-muted small">{{ rec.body }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- ── Alerts tab ──────────────────────────────────────────────────── -->
+    <div class="tab-pane fade" id="tab-alerts">
+      <div class="d-flex flex-column gap-3">
+        {% for alert in alerts %}
+        <div class="alert alert-{{ alert.bs_class }} d-flex align-items-start gap-3 mb-0 shadow-sm">
+          <div class="alert-icon">{{ alert.icon }}</div>
+          <div>
+            <strong>{{ alert.title }}</strong>
+            <div class="small mt-1">{{ alert.message }}</div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+  </div><!-- /tab-content -->
+</div><!-- /container -->
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+const STUDENT_ID = "{{ student.id }}";
+
+// Load chart data from API and render
+fetch(`/api/charts/${STUDENT_ID}`)
+  .then(r => r.json())
+  .then(data => {
+    renderGradesChart(data.grades);
+    renderPieChart(data.pie);
+    renderComparisonChart(data.comparison);
+  });
+
+function renderGradesChart(cfg) {
+  if (!cfg || !cfg.data) return;
+  new Chart(document.getElementById('gradesChart'), cfg);
+}
+
+function renderPieChart(cfg) {
+  if (!cfg || !cfg.data) return;
+  new Chart(document.getElementById('pieChart'), cfg);
+}
+
+function renderComparisonChart(cfg) {
+  if (!cfg || !cfg.data) return;
+  new Chart(document.getElementById('comparisonChart'), cfg);
+}
+</script>
+{% endblock %}

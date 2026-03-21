@@ -72,7 +72,15 @@ DEMO_STUDENTS = [
 # App setup
 # ---------------------------------------------------------------------------
 app = Flask(__name__)
-app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-key-change-in-prod")
+_secret = os.environ.get("SECRET_KEY", "")
+if not _secret:
+    import warnings
+    warnings.warn(
+        "SECRET_KEY is not set. Using an insecure default – set SECRET_KEY in production.",
+        stacklevel=1,
+    )
+    _secret = "dev-only-insecure-key-set-SECRET_KEY-env-var"
+app.secret_key = _secret
 
 SUPABASE_URL = os.environ.get("SUPABASE_URL", "")
 SUPABASE_KEY = os.environ.get("SUPABASE_KEY", "")
@@ -316,4 +324,5 @@ def not_found(e):
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
-    app.run(debug=True, host="0.0.0.0", port=port)
+    debug = os.environ.get("FLASK_DEBUG", "0") == "1"
+    app.run(debug=debug, host="0.0.0.0", port=port)
